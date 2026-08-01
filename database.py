@@ -337,9 +337,17 @@ class _SQLite:
 
 class _Supabase:
     def __init__(self):
+        import streamlit as st
         from supabase import create_client
-        self.client = create_client(SUPABASE_URL, SUPABASE_KEY)
-        self._tables = {}
+        
+        supabase_url = st.secrets.get("SUPABASE_URL")
+        supabase_key = st.secrets.get("SUPABASE_KEY")
+        
+        if not supabase_url or not supabase_key:
+            raise ValueError("请在 Secrets 中配置 SUPABASE_URL 和 SUPABASE_KEY")
+        
+        self.client = create_client(supabase_url, supabase_key)
+        self.tables = {}
 
     def _t(self, name):
         """Get table reference."""
